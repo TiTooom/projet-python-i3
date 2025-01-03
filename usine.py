@@ -17,16 +17,15 @@ class Factory:
 
 if __name__ == '__main__':
 
-    print("Début de la simulation")   
+    print("\nDébut de la simulation")   
 
     # Création de l'usine 
     USINE = Factory("Mettalurgic", "France", 1972000)
 
     # Création de machines 
-    MACHINE = Machine()
-    machine1 = MACHINE.init("PM1", "Découpe", 10, 10, "running")
-    machine2 = MACHINE.init("PM2", "Fonderie", 15, 10, "running")
-    machine3 = MACHINE.init("PM3", "Assemblage", 20, 10, "running")
+    machine1 = Machine("PM1", "Découpe", 95, 0.01, "running")
+    machine2 = Machine("PM2", "Fonderie", 95, 0.01, "running")
+    machine3 = Machine("PM3", "Assemblage", 95, 0.03, "running")
 
     # Ajout des machines à l'usine
     USINE.machines.append(machine1)
@@ -34,22 +33,24 @@ if __name__ == '__main__':
     USINE.machines.append(machine3)
 
     # Affichage des informations de l'usine
-    print("Nom de l'usine : ", USINE.nom)
+    print("\nNom de l'usine : ", USINE.nom)
     print("Localisation de l'usine : ", USINE.localization)
     print("Capacité de l'usine : ", USINE.capacity)
-    print("Liste des machines de l'usine : ")
+    print("\nListe des machines de l'usine : ")
     for i in range(len(USINE.machines)):
-        print(USINE.machines[i].name, " : ", USINE.machines[i].type, " : ", USINE.machines[i].speed, " : ", USINE.machines[i].cycle_time, " : ", USINE.machines[i].state)
+        print(USINE.machines[i].name, " : ", USINE.machines[i].type, " : ", USINE.machines[i].speed, "% : ", USINE.machines[i].cycle_time, "sec : ", USINE.machines[i].state)
     
-    # Afficher les materiaux
-    GESTION = Gestion()
+    # Afficher les materiaux de l'usine
+    GESTION = Gestion(USINE)
     GESTION.display_materials()
     GESTION.display_recipes() 
     
     # Vérification de la disponibilité des matériaux
-    print("Exemple de la disponibilité du fer")
+    print("\nExemple de la disponibilité du fer")
     GESTION.available_material("Iron")
 
     # Lancement en prodction d'une recette
-    print("Exemple de production de vis")
-    GESTION.start_production("Screw")
+    print("\nExemple de production")
+    GESTION.start_production("Screw", 100)
+    GESTION.start_production("Screwdriver", 100)
+
