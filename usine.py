@@ -1,4 +1,5 @@
 import tkinter as tk
+
 from machine import Machine
 from materiaux import Material
 from materiaux import Recipes
@@ -11,6 +12,7 @@ class Factory:
         self.localization = localization #localisation de l'usine
         self.capacity = capacity #capacité de stockage de l'usine
         self.machines = [] #liste des machines de l'usine
+        self.alea = [] #liste des aléas de l'usine
 
 
 
@@ -31,6 +33,18 @@ if __name__ == '__main__':
     USINE.machines.append(machine1)
     USINE.machines.append(machine2)
     USINE.machines.append(machine3)
+
+    # Création des aléas de l'usine
+    from alea import Alea
+    alea1 = Alea(USINE, "Bourage",USINE.machines[0], "Arret de la machine ", 10, "stopped")
+    alea2 = Alea(USINE, "Probleme electrique",USINE.machines[1], "Arret de la machine ", 20, "stopped")
+    alea3 = Alea(USINE, "Maintenance",USINE.machines[2], "Arret de la machine ", 30, "maintenance")
+
+    # Ajout des aléas à l'usine
+    USINE.alea.append(alea1)
+    USINE.alea.append(alea2)
+    USINE.alea.append(alea3)
+
 
     # Affichage des informations de l'usine
     print("\nNom de l'usine : ", USINE.nom)
@@ -53,4 +67,7 @@ if __name__ == '__main__':
     print("\nExemple de production")
     GESTION.start_production("Screw", 100)
     GESTION.start_production("Screwdriver", 100)
+
+    from alea import Alea
+    Alea.launch_random_event(USINE)
 
