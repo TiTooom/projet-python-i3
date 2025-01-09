@@ -2,6 +2,7 @@ from machine import Machine
 
 SECURITY_STOCK = 1000 # Stock de sécurité
 ORDER_BATCH = 3000 # Quantité à commander pour les matériaux
+ROUND = 3 # Arrondi pour les temps de production (N chiffre(s) après la virgule)
 
 class Material:
     def __init__(self, name, quantity, price):
@@ -53,7 +54,7 @@ class Gestion:
         recipe2 = Recipes("Marteau", ["Fer", "Acier"], [2, 1], [self.USINE.machines[0], self.USINE.machines[2]])
         recipe3 = Recipes("Clou", ["Fer"], [1], [self.USINE.machines[1]])
         recipe4 = Recipes("Vis", ["Fer"], [1], [self.USINE.machines[0]])
-        recipe5 = Recipes("Écrou", ["Acier"], [1], [self.USINE.machines[2]])
+        recipe5 = Recipes("Ecrou", ["Acier"], [1], [self.USINE.machines[2]])
         recipe6 = Recipes("Boulon", ["Acier"], [1], [self.USINE.machines[1], self.USINE.machines[2]])
 
         # Liste des recettes
@@ -120,13 +121,24 @@ class Gestion:
                 total_time = 0
                 for machine in range(0,len(self.list_recipes[i].usedmachines)): # Parcours des machines
                     print("Passage sur", self.list_recipes[i].usedmachines[machine].name, ":", self.list_recipes[i].usedmachines[machine].type)
+                    if self.list_recipes[i].usedmachines[machine].state == "stopped": # Vérification de l'état de la machine
+                        print("La machine", self.list_recipes[i].usedmachines[machine].name, "est arrêtée")
+                        while(1) :
+                            # Arret de la machine et mise en pause du programme
+                            pass
+                    if self.list_recipes[i].usedmachines[machine].state == "maintenance":
+                        print("La machine", self.list_recipes[i].usedmachines[machine].name, "est en maintenance")
+                        while(1) :
+                            # Maintenance de la machine et mise en pause du programme
+                            pass
+                            
                     if total_time == 0:
                         print("Détail calcul :")
                     print(self.list_recipes[i].usedmachines[machine].cycle_time,"/",self.list_recipes[i].usedmachines[machine].speed/100,"x",total_quantity)
                     total_time += self.list_recipes[i].usedmachines[machine].cycle_time / ((self.list_recipes[i].usedmachines[machine].speed)/100) * total_quantity # Calcul du temps de production
                     
                 
-                print("La production de", recipe, "prend", total_time, "secondes")
+                print("La production de", recipe, "prend", round(total_time, ROUND), "secondes")
                 
                 print("La production de ", quantity, recipe, "(s) est terminée")
                 break

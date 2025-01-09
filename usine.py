@@ -75,8 +75,8 @@ if __name__ == '__main__':
 
     # Lancement en prodction d'une recette
     print("\nExemple de production :")
-    GESTION.start_production("Vis", 1)
-    GESTION.start_production("Tournevis", 1)
+    GESTION.start_production("Ecrou", 1)
+    GESTION.start_production("Boulon", 1)
 
     # Affichag du carnet de commande de l'usine
     ORDER = Order(USINE)
