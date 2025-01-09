@@ -1,4 +1,0 @@
-2025-01-03 17:20:39,722 - CRITICAL - Alea apparu : Bourage
-2025-01-03 17:20:39,722 - WARNING - L'etat de la machine PM1 est : stopped
-2025-01-03 17:20:39,722 - INFO - Duree de l'alea : 10 secondes
-2025-01-03 17:20:39,722 - INFO - L'etat de la machine PM1 est : running

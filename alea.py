@@ -3,6 +3,7 @@
 from random import randint
 import logging
 import os
+import time
 
 from usine import Factory
 
@@ -37,6 +38,7 @@ class Alea:
         # Durée de l'aléa
         print("Durée de l'aléa : ", factory.alea[alea_number].duration, " secondes")
         logging.info(f"Duree de l'alea : {factory.alea[alea_number].duration} secondes")
+        time.sleep(factory.alea[alea_number].duration) # pause de la durée de l'aléa
         
         # Fin de l'aléa
         factory.alea[alea_number].factory.machines[alea_number].state = "running"

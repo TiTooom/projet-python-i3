@@ -1,9 +1,19 @@
 import tkinter as tk
+import threading
 
 from machine import Machine
 from materiaux import Material
 from materiaux import Recipes
 from materiaux import Gestion
+from window import App
+from commandes import Order
+
+# Choisir si on veut activer les aléas
+ALLOW_ALEA = False
+
+'''
+Fichier à executer pour lancer la simulation.
+'''
 
 # Création de l'usine
 class Factory:
@@ -22,7 +32,7 @@ if __name__ == '__main__':
     print("\nDébut de la simulation")   
 
     # Création de l'usine 
-    USINE = Factory("Mettalurgic", "France", 1972000)
+    USINE = Factory("ConnectProd Industries", "France", 1972000)
 
     # Création de machines 
     machine1 = Machine("PM1", "Découpe", 95, 0.01, "running")
@@ -36,9 +46,9 @@ if __name__ == '__main__':
 
     # Création des aléas de l'usine
     from alea import Alea
-    alea1 = Alea(USINE, "Bourage",USINE.machines[0], "Arret de la machine ", 10, "stopped")
-    alea2 = Alea(USINE, "Probleme electrique",USINE.machines[1], "Arret de la machine ", 20, "stopped")
-    alea3 = Alea(USINE, "Maintenance",USINE.machines[2], "Arret de la machine ", 30, "maintenance")
+    alea1 = Alea(USINE, "Bourage",USINE.machines[0], "Arret de la machine ", 3, "stopped")
+    alea2 = Alea(USINE, "Probleme electrique",USINE.machines[1], "Arret de la machine ", 3, "stopped")
+    alea3 = Alea(USINE, "Maintenance",USINE.machines[2], "Arret de la machine ", 3, "maintenance")
 
     # Ajout des aléas à l'usine
     USINE.alea.append(alea1)
@@ -57,17 +67,26 @@ if __name__ == '__main__':
     # Afficher les materiaux de l'usine
     GESTION = Gestion(USINE)
     GESTION.display_materials()
-    GESTION.display_recipes() 
+    GESTION.display_recipes(True) # True = Affichage des recettes / False = Récuperation des recettes
     
     # Vérification de la disponibilité des matériaux
-    print("\nExemple de la disponibilité du fer")
-    GESTION.available_material("Iron")
+    print("\nExemple de la disponibilité du fer :")
+    GESTION.available_material("Fer")
 
     # Lancement en prodction d'une recette
-    print("\nExemple de production")
-    GESTION.start_production("Screw", 100)
-    GESTION.start_production("Screwdriver", 100)
+    print("\nExemple de production :")
+    GESTION.start_production("Vis", 1)
+    GESTION.start_production("Tournevis", 1)
 
-    from alea import Alea
-    Alea.launch_random_event(USINE)
+    # Affichag du carnet de commande de l'usine
+    ORDER = Order(USINE)
+
+    # Lancement d'un aléa aléatoire
+    if ALLOW_ALEA:
+        Alea.launch_random_event(USINE)
+
+
+    # Boucle de la simulation (envoyer USINE et GESTION en paramètre) 
+    #App.set_up()
+        
 

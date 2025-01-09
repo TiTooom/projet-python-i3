@@ -1,2 +1,21 @@
-*.pdf
+# Ignore les répertoires de cache Python
 __pycache__/
+*.pyc
+*.pyo
+
+# Ignore les fichiers de configuration de l'environnement virtuel
+venv/
+.env
+
+# Ignore les fichiers de log
+*.log
+
+# Ignore les fichiers de configuration spécifiques à l'IDE
+.vscode/
+.idea/
+
+# Ignore les fichiers de sauvegarde
+logs/
+
+# Ignore les pdf
+*.pdf
