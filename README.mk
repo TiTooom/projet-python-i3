@@ -61,3 +61,21 @@ Intégrer un journal des anomalies (log des incidents).
 - fichier "alea.py", classe "Alea", fonction "launch_random_event" -> écriture de l'incident dans un fichier log
 
 ## 5. Visualisation et rapports
+
+Générer des rapports simples sur : 
+Le taux de production.
+- [A FAIRE]
+
+Les anomalies détectées. 
+- [A FAIRE]
+
+L'état des stocks. 
+- [A FAIRE]
+
+Afficher un tableau de bord en terminal ou avec une bibliothèque graphique comme matplotlib pour 
+visualiser :
+L’évolution des stocks.
+- [A FAIRE]
+
+Le fonctionnement des machines.
+- [A FAIRE]

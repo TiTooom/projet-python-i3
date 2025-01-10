@@ -32,12 +32,12 @@ if __name__ == '__main__':
     print("\nDébut de la simulation")   
 
     # Création de l'usine 
-    USINE = Factory("ConnectProd Industries", "France", 1972000)
+    USINE = Factory("ConnectProd Industries", "France", 972000)
 
     # Création de machines 
-    machine1 = Machine("PM1", "Découpe", 95, 0.01, "running")
-    machine2 = Machine("PM2", "Fonderie", 95, 0.01, "running")
-    machine3 = Machine("PM3", "Assemblage", 95, 0.03, "running")
+    machine1 = Machine("PM1", "Découpe", 95, 0.11, "running")
+    machine2 = Machine("PM2", "Fonderie", 95, 0.12, "running")
+    machine3 = Machine("PM3", "Assemblage", 95, 0.21, "running")
 
     # Ajout des machines à l'usine
     USINE.machines.append(machine1)
@@ -75,8 +75,12 @@ if __name__ == '__main__':
 
     # Lancement en prodction d'une recette
     print("\nExemple de production :")
-    GESTION.start_production("Ecrou", 1)
-    GESTION.start_production("Boulon", 1)
+    GESTION.start_production("Couteau", 1, True)
+    GESTION.start_production("Fourchette", 1, True)
+    #GESTION.start_production("Cuillère", 18181, True)
+    #GESTION.start_production("Spatule", 18181, True)
+    #GESTION.start_production("Louche", 18181, True)
+    #GESTION.start_production("Pelle à tarte", 18181, True)
 
     # Affichag du carnet de commande de l'usine
     ORDER = Order(USINE)
@@ -84,6 +88,10 @@ if __name__ == '__main__':
     # Lancement d'un aléa aléatoire
     if ALLOW_ALEA:
         Alea.launch_random_event(USINE)
+
+    # Charge, capacité et taux de charge des machines
+    ORDER.machine_capacity(USINE)
+
 
 
     # Boucle de la simulation (envoyer USINE et GESTION en paramètre) 
