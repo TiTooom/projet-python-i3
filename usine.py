@@ -76,7 +76,7 @@ if __name__ == '__main__':
     # Lancement en prodction d'une recette
     print("\nExemple de production :")
     GESTION.start_production("Couteau", 1, "all",True)
-    GESTION.start_production("Fourchette", 1,"all", True)
+    GESTION.start_production("Fourchette", 100000,"all", True)
     #GESTION.start_production("Cuillère", 1,"all", True)
     #GESTION.start_production("Spatule", 1,"all", True)
     #GESTION.start_production("Louche", 1,"all", True)

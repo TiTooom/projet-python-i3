@@ -1,5 +1,5 @@
-SECURITY_STOCK = 1000 # Stock de sécurité
-BATCH_ORDER = 3000 # Quantité à commander pour les matériaux
+SECURITY_STOCK = 10000 # Stock de sécurité
+BATCH_ORDER = 7000 # Quantité à commander pour les matériaux
 ROUND_SEC = 3 # Arrondi pour les temps de production (N chiffre(s) après la virgule)
 ROUND_MIN = 3 # Arrondi pour les temps de production (N chiffre(s) après la virgule)
 
@@ -102,16 +102,19 @@ class Gestion:
                     index = 0 # Index pour situer les matériaux dans la liste
                     for material in self.list_materials:
                         
+                        # Commande de stock pour entretenir le stock de sécurité
                         if material.name == self.list_recipes[i].component[j]: # Vérification de l'existence du matériel
-                            if material.quantity < SECURITY_STOCK: # Vérification du stock de sécurité
+                            if material.quantity < SECURITY_STOCK and SECURITY_STOCK >= 0: # Vérification du stock de sécurité
                                 self.order_materials(self.list_recipes[i].component[j], BATCH_ORDER) # Commande de matériaux
                                 if print_production == True:
-                                    print("Commande de", BATCH_ORDER, "élement(s) de ", self.list_recipes[i].component[j], "passée") 
+                                    print("Commande de", BATCH_ORDER, "élement(s) de", self.list_recipes[i].component[j], "passée pour entretenir le stock de sécurité") 
 
-                            # Ne doit pas arriver en raison du stock de sécurité
+                            # commande en grosse quantité pour fournir les grosses commandes et met fin à la production de la recette
                             if self.list_recipes[i].quantity[j]*quantity > material.quantity: # Vérification de la disponibilité des matériaux
                                 if print_production == True:
                                     print("Il n'y a pas assez de", self.list_recipes[i].component[j],"pour produire", recipe)
+                                    self.order_materials(self.list_recipes[i].component[j], -(-self.list_recipes[i].quantity[j]*quantity // BATCH_ORDER) * BATCH_ORDER) # Arrondi à l'entier positif supérieur
+                                    print("Commande de", -(-self.list_recipes[i].quantity[j]*quantity // BATCH_ORDER) * BATCH_ORDER, "élement(s) de", self.list_recipes[i].component[j], "passée pour réaliser la commande plus tard.")
                                 return 0
                      
                     

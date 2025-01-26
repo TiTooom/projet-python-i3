@@ -67,12 +67,17 @@ Le taux de production.
 - fichier "commande.py", classe "Order", fonctions "machines_capacity" et "machine_capacity" 
 -> taux de charge de toutes les machines en moyenne
 -> taux de charge par machine
+-> goulot d'étranglement
+-> machines surchagées
+-> machine la plus surchargée
 
 Les anomalies détectées. 
-- [A FAIRE]
+- fichier "alea.py", classe "Alea", fonction "launch_random_event" -> écriture de l'incident dans un fichier log
 
 L'état des stocks. 
-- fichier "materiaux.py", classe "Gestion", fonction "launch_random_event" -> écriture de l'incident dans un fichier log
+- fichier "materiaux.py", classe "Gestion", fonction "start_production" 
+-> commande automatique en lot s'il y a un manque
+-> stock trop insuffisant, la production de la recette est arretée
 
 Afficher un tableau de bord en terminal ou avec une bibliothèque graphique comme matplotlib pour 
 visualiser :
