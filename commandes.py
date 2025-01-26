@@ -17,19 +17,83 @@ class Order:
         for i in range(len(self.order["Recipe"])):
             print(self.order["Recipe"][i].name, " : ", self.order["Quantity"][i], " pièces")
 
-    def machine_capacity(self, usine): # Calcul de la capacité et de la charge de chaque machine sur le carnert de commande
+    def machines_capacity(self, usine, print_capacity): # Calcul de la capacité et de la charge de chaque machine sur le carnert de commande
         # Reset de la charge (s)
         load = 0
 
         for i in range(len(self.order["Recipe"])):
-            load += Gestion(usine).start_production(self.order["Recipe"][i].name, self.order["Quantity"][i], False) # false permet d'uniquement utiliser le calcul
+            load += Gestion(usine).start_production(self.order["Recipe"][i].name, self.order["Quantity"][i], "all",False) # false permet d'uniquement utiliser le calcul
                 
         # Capacité totale des machines
         capacity = len(usine.machines) * WORKING_TIME
 
-        print("\nCharge totale des machines : ", load, " secondes")  
-        print("Capacité totale des machines : ", capacity, " secondes")
-        print("Taux de charge des machines : ", round(load/capacity*100, 2), "%")    
+        if print_capacity == True:
+            print("\nCharge totale des machines : ", round(load,2), " secondes")  
+            print("Capacité totale des machines : ", round(capacity,2), " secondes")
+            print("Taux de charge des machines : ", round(load/capacity*100, 2), "%")    
+        
+    def machine_capacity(self, usine, machine_filter, print_capacity):
+        # Reset de la charge (s)
+        load = 0
+
+        for i in range(len(self.order["Recipe"])):
+            load += Gestion(usine).start_production(self.order["Recipe"][i].name, self.order["Quantity"][i], machine_filter, False) # false permet d'uniquement utiliser le calcul
+                
+        # Capacité totale de la machine
+        capacity = WORKING_TIME
+
+        if print_capacity == True:
+            print("\nCharge totale de",machine_filter,": ", round(load,2), " secondes")  
+            print("Capacité totale de",machine_filter,": ", round(capacity,2), " secondes")
+            print("Taux de charge de",machine_filter,": ", round(load/capacity*100, 2), "%") 
+
+        return round(load/capacity*100, 2)
+
+    def overload(self,usine):
+
+        # Récupération du taux de charge le plus fort
+        for index in range(0,len(usine.machines)):
+            val = self.machine_capacity(usine, usine.machines[index].name, False)
+            if (index+1) <= len(usine.machines)-1:
+                if self.machine_capacity(usine, usine.machines[index+1].name, False) > val :
+                    val = self.machine_capacity(usine, usine.machines[index+1].name, False)
+                    name_overload = usine.machines[index+1].name
+
+        # Récupération des taux de charge  > 100%
+        stock_overload = []
+        for index in range(0,len(usine.machines)):
+            val = self.machine_capacity(usine, usine.machines[index].name, False)
+            if val > 100:
+                if usine.machines[index].name != name_overload:
+                    stock_overload.append(usine.machines[index].name)
+                    print("\nLa machine :", usine.machines[index].name, "est en surcharge avec un taux de charge de ", val, "%")
+        
+        
+        print("\nLa machine :", name_overload, "est la plus surchagée avec un taux de charge de ", val, "%")
+
+        return stock_overload, name_overload
+    
+    def bottleneck(self,usine):
+        # Récupération du taux de charge le plus fort
+        name_bottleneck = "empty"  # Initialize name_bottleneck with the first machine's name
+        for index in range(0,len(usine.machines)):
+            val = usine.machines[index].speed * usine.machines[index].cycle_time / 100 # Vitesse de la machine * temps de cycle
+            name_bottleneck = usine.machines[index].name
+            if (index+1) <= len(usine.machines)-1: # Vérification de la fin de la liste
+                if usine.machines[index+1].speed * usine.machines[index+1].cycle_time / 100 < val : # Si machine suivante plus lente
+                    val = usine.machines[index+1].speed * usine.machines[index+1].cycle_time / 100 # Machine suivante devient le goulot
+                    name_bottleneck = usine.machines[index+1].name 
+
+        print("\nLa machine :", name_bottleneck, "est le goulot d'étranglement une efficacité de", round(val,2), "par opération")
+
+        return name_bottleneck
+
+
+                
+
+
+
+        
         
 
                 

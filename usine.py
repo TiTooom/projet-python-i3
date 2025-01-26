@@ -75,12 +75,12 @@ if __name__ == '__main__':
 
     # Lancement en prodction d'une recette
     print("\nExemple de production :")
-    GESTION.start_production("Couteau", 1, True)
-    GESTION.start_production("Fourchette", 1, True)
-    #GESTION.start_production("Cuillère", 18181, True)
-    #GESTION.start_production("Spatule", 18181, True)
-    #GESTION.start_production("Louche", 18181, True)
-    #GESTION.start_production("Pelle à tarte", 18181, True)
+    GESTION.start_production("Couteau", 1, "all",True)
+    GESTION.start_production("Fourchette", 1,"all", True)
+    #GESTION.start_production("Cuillère", 1,"all", True)
+    #GESTION.start_production("Spatule", 1,"all", True)
+    #GESTION.start_production("Louche", 1,"all", True)
+    #GESTION.start_production("Pelle à tarte", 1,"all", True)
 
     # Affichag du carnet de commande de l'usine
     ORDER = Order(USINE)
@@ -90,11 +90,21 @@ if __name__ == '__main__':
         Alea.launch_random_event(USINE)
 
     # Charge, capacité et taux de charge des machines
-    ORDER.machine_capacity(USINE)
+    ORDER.machines_capacity(USINE, True)
 
+    # Charge, capacité et taux de charge d'une machine
+    ORDER.machine_capacity(USINE, "PM1", True)
+    ORDER.machine_capacity(USINE, "PM2", True)
+    ORDER.machine_capacity(USINE, "PM3", True)
+
+    # Machine en surcharge
+    ORDER.overload(USINE)
+
+    # Goulot d'étranglement
+    ORDER.bottleneck(USINE)
 
 
     # Boucle de la simulation (envoyer USINE et GESTION en paramètre) 
-    #App.set_up()
+    App.set_up()
         
 

@@ -64,13 +64,15 @@ Intégrer un journal des anomalies (log des incidents).
 
 Générer des rapports simples sur : 
 Le taux de production.
-- [A FAIRE]
+- fichier "commande.py", classe "Order", fonctions "machines_capacity" et "machine_capacity" 
+-> taux de charge de toutes les machines en moyenne
+-> taux de charge par machine
 
 Les anomalies détectées. 
 - [A FAIRE]
 
 L'état des stocks. 
-- [A FAIRE]
+- fichier "materiaux.py", classe "Gestion", fonction "launch_random_event" -> écriture de l'incident dans un fichier log
 
 Afficher un tableau de bord en terminal ou avec une bibliothèque graphique comme matplotlib pour 
 visualiser :

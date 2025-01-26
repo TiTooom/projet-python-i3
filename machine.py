@@ -6,5 +6,5 @@ class Machine:
         self.cycle_time = cycle_time #temps de cycle de la machine -> temps pour produire une pièce en seconde
         self.state = state #état de la machine -> running, stopped, maintenance
 
-        
+    
 
