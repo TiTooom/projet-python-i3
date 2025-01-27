@@ -77,7 +77,7 @@ Les anomalies détectées.
 L'état des stocks. 
 - fichier "materiaux.py", classe "Gestion", fonction "start_production" 
 -> commande automatique en lot s'il y a un manque
--> stock trop insuffisant, la production de la recette est arretée
+-> stock trop insuffisant, la production de la recette est arretée et nouvelle commande pour anticiper cette prochaine commande future
 
 Afficher un tableau de bord en terminal ou avec une bibliothèque graphique comme matplotlib pour 
 visualiser :

@@ -65,6 +65,8 @@ class Gestion:
         self.list_recipes.append(recipe5)
         self.list_recipes.append(recipe6)
 
+        return self.list_materials
+
     # Affichage des matériaux
     def display_materials(self): 
         print("\nListe des matériaux : ")
@@ -164,7 +166,7 @@ class Gestion:
         for i in range(len(self.list_materials)):
             if self.list_materials[i].name == material:
                 self.list_materials[i].quantity += quantity
-                print("Commande de", quantity, "élement(s) de", material, "passée")
+                #print("Commande de", quantity, "élement(s) de", material, "passée")
                 break
         else:
             print("Le matériel", material, "n'existe pas")

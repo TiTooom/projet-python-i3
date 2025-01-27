@@ -7,6 +7,7 @@ from materiaux import Recipes
 from materiaux import Gestion
 from window import App
 from commandes import Order
+from graph import Graph
 
 # Choisir si on veut activer les aléas
 ALLOW_ALEA = False
@@ -103,8 +104,14 @@ if __name__ == '__main__':
     # Goulot d'étranglement
     ORDER.bottleneck(USINE)
 
+    # Affichage graphes taux de charge
+    
+    
+    Graph.capacity_chart(USINE,ORDER)
+
+    Graph.stock_chart(GESTION.list_materials)
 
     # Boucle de la simulation (envoyer USINE et GESTION en paramètre) 
-    App.set_up()
+    #App.set_up()
         
 
