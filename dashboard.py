@@ -46,7 +46,6 @@ class DashboardApp:
         # Simuler l'envoi de données toutes les 5 secondes
         self.root.after(500, self.simulate_data_update)
 
-
         # Mis à jour des graphiques
         self.simulate_data_update()
         self.root.mainloop()

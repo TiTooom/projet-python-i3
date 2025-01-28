@@ -64,7 +64,7 @@ if __name__ == '__main__':
 
     # Affichage des recettes et des matériaux
     GESTION.display_materials(True)
-    GESTION.display_recipes(True) # True = Affichage des recettes / False = Récuperation des recettes
+    recipes = GESTION.display_recipes(True) # True = Affichage des recettes / False = Récuperation des recettes
     
     # Vérification de la disponibilité des matériaux
     print("\nExemple de la disponibilité du fer :")
@@ -72,12 +72,9 @@ if __name__ == '__main__':
 
     # Lancement en prodction d'une recette
     print("\nExemple de production :")
-    GESTION.start_production("Couteau", 1, "all",True, True)
-    GESTION.start_production("Fourchette", 1,"all", True, True)
-    #GESTION.start_production("Cuillère", 1,"all", True)
-    #GESTION.start_production("Spatule", 1,"all", True)
-    #GESTION.start_production("Louche", 1,"all", True)
-    #GESTION.start_production("Pelle à tarte", 1,"all", True)
+    GESTION.start_production(recipe = recipes[0], quantity = 1, machine_filter = "all", print_production = True)
+
+    
 
     
     # Affichag du carnet de commande de l'usine

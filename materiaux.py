@@ -93,122 +93,123 @@ class Gestion:
         for i in range(len(self.list_materials)):
             if self.list_materials[i].name == material:
                 print(self.list_materials[i].quantity,"élement(s) de", material, "sont disponibles")
-                 
-    def start_production(self, recipe, quantity, machine_filter,print_production, print_simulation):
 
+
+
+   
+    def find_recipe(self, recipe, print_production):
         for i in range(len(self.list_recipes)):
-
-            # Vérification de l'existence de la recette
-            if self.list_recipes[i].name == recipe: 
-                #Lacement de la production
-                total_quantity = 0
+            if self.list_recipes[i].name == recipe.name:
                 if print_production == True:
-                    print("\nLa production de", recipe, "a commencé")
-                for j in range(len(self.list_recipes[i].component)): # Parcours des composants de la recette
+                    print("La recette", recipe.name, "existe")
+                return recipe
+        else:
+            if print_production == True:
+                print("La recette", recipe.name, "n'existe pas")
+            return 0
+        
+    def calculate_total_quantity(self,recipe, quantity, print_production):
+        # Si la recette existe
+        if self.find_recipe(recipe, False) != 0:
+            total_quantity = 0 # Initialisation de la quantité totale
+            
+            for i in range(len(recipe.component)): # Parcours des composants de la recette
+                if print_production == True:
+                    print("Consommation de ", recipe.quantity[i] * quantity, "élement(s) de", recipe.component[i]) # Consommation des matériaux
+                total_quantity += recipe.quantity[i] * quantity # Calcul de la quantité totale de matériaux
+            return total_quantity
+
+    def stock_management(self, recipe, quantity, print_production):
+        
+        # Vérification de l'existence du materiaux
+        for i in range(len(recipe.component)): # Défilement des composants de la recette
+            for j in range(len(self.list_materials)): # Défilement des matériaux du stock
+                if recipe.component[i] == self.list_materials[j].name: # Le composant existe dans le stock
+                    
+                    # Si la quantité de matériaux est insuffisante mais supérieure à 0 > Commande automatique de matériaux
+                    if self.list_materials[j].quantity < SECURITY_STOCK and self.list_materials[j].quantity >= 0: # Vérification du stock de sécurité
+                        self.order_materials(self.recipe.component[i].name, BATCH_ORDER) # Commande de matériaux
+                        if print_production == True:
+                            print("Commande de", BATCH_ORDER, "élement(s) de", self.recipe.component[i], "passée pour entretenir le stock de sécurité") 
+    
+                    # Si la commande exige plus que disponible dans le stock > Commande automatique de matériaux (en quantité suffisante)
+                    if recipe.quantity[i] * quantity > self.list_materials[j].quantity:
+                        if print_production == True:
+                            print("Il n'y a pas assez de", self.recipe.component[i].name,"pour produire", recipe)
+                        self.order_materials(recipe.component[i].name, -(-recipe.quantity[i] * quantity // BATCH_ORDER) * BATCH_ORDER) # Arrondi à l'entier positif supérieur
+                        if print_production == True:
+                            print("Commande de", -(-self.recipe.component[i].quantity * quantity // BATCH_ORDER) * BATCH_ORDER, "élement(s) de", self.recipe.component[i].name, "passée pour réaliser la commande plus tard.")
+                        return 0
+                
+    def materials_consumption(self, recipe, quantity, print_production):
+        # La recette est en prodcution et les matériaux sont consommés
+        for i in range(len(recipe.component)): # Défilement des composants de la recette
+            for j in range(len(self.list_materials)): # Défilement des matériaux du stock
+                if recipe.component[i] == self.list_materials[j].name: # Le composant existe dans le stock
+                    self.list_materials[j].quantity -= recipe.quantity[i] * quantity # Consommation des matériaux
                     if print_production == True:
-                        print("Consommation de ", self.list_recipes[i].quantity[j]*quantity, "élement(s) de", self.list_recipes[i].component[j]) # Consommation des matériaux
-                    total_quantity += self.list_recipes[i].quantity[j]*quantity # Calcul de la quantité totale de matériaux
+                        print("Le stock de", recipe.component[i], "est de",self.list_materials[j].quantity,"élement(s) après consommation")
+                    break
+            return self.list_materials
+    
+    def calculate_production_time(self, recipe, quantity, print_production, machine_filter):
+        total_time = 0 # Initialisation du temps de production
+        total_quantity = self.calculate_total_quantity(recipe, quantity, print_production) # Calcul de la quantité totale de matériaux
 
-                    # Commande de matériaux si nécessaire
-                    index = 0 # Index pour situer les matériaux dans la liste
-                    for material in self.list_materials:
-                        
-                        # Commande de stock pour entretenir le stock de sécurité
-                        if material.name == self.list_recipes[i].component[j]: # Vérification de l'existence du matériel
-                            if material.quantity < SECURITY_STOCK and material.quantity >= 0: # Vérification du stock de sécurité
-                                self.order_materials(self.list_recipes[i].component[j], BATCH_ORDER) # Commande de matériaux
-                                if print_production == True:
-                                    print("Commande de", BATCH_ORDER, "élement(s) de", self.list_recipes[i].component[j], "passée pour entretenir le stock de sécurité") 
-
-                            # commande en grosse quantité pour fournir les grosses commandes et met fin à la production de la recette
-                            if self.list_recipes[i].quantity[j]*quantity > material.quantity: # Vérification de la disponibilité des matériaux
-                                if print_production == True:
-                                    print("Il n'y a pas assez de", self.list_recipes[i].component[j],"pour produire", recipe)
-                                    self.order_materials(self.list_recipes[i].component[j], -(-self.list_recipes[i].quantity[j]*quantity // BATCH_ORDER) * BATCH_ORDER) # Arrondi à l'entier positif supérieur
-                                    print("Commande de", -(-self.list_recipes[i].quantity[j]*quantity // BATCH_ORDER) * BATCH_ORDER, "élement(s) de", self.list_recipes[i].component[j], "passée pour réaliser la commande plus tard.")
-                                return 0
-                     
-                    
-                            # Consommation des matériaux
-                            if print_production == True: #Permet de ne pas retirer dans le stock et juste faire les calculs
-                                self.list_materials[index].quantity -= self.list_recipes[i].quantity[j]*quantity
-                            if print_production == True:
-                                print("Le stock de", self.list_recipes[i].component[j], "est de",self.list_materials[index].quantity,"élement(s) après consommation")
-                        index += 1
+        for i in range(len(recipe.usedmachines)): # Défilement des machines utilisées pour la recette
+            
+            # Si la machine est sélectionnée ou si toutes les machines sont sélectionnées
+            if machine_filter == recipe.usedmachines[i].name or machine_filter == "all":
+            
+                if print_production == True:
+                    print("Passage sur", recipe.usedmachines[i].name, ":", recipe.usedmachines[i].type)
+        
+                # Si la machine est arrêtée
+                if recipe.usedmachines[i].state == "stopped": # Vérification de l'état de la machine
+                    if print_production == True:
+                        print("La machine", recipe.usedmachines[i].name, "est arrêtée")
+                    while(recipe.usedmachines[i] == "stopped") :
+                        # Arret de la machine et mise en pause du programme
+                        pass
                 
-                # Passage sur les autres machines + Temps de production totale de la recette
-                total_time = 0
-                for machine in range(0,len(self.list_recipes[i].usedmachines)): # Parcours des machines
-                    
-                    if machine_filter == self.list_recipes[i].usedmachines[machine].name or machine_filter == "all":
-                        if print_production == True:
-                            print("Passage sur", self.list_recipes[i].usedmachines[machine].name, ":", self.list_recipes[i].usedmachines[machine].type)
-                            
+                # Si la machine est en maintenance
+                if recipe.usedmachines[i].state == "maintenance":
+                    if print_production == True:
+                        print("La machine", recipe.usedmachines[i].name, "est en maintenance")
+                    while(recipe.usedmachines[i] == "maintenance") :    
+                        # Maintenance de la machine et mise en pause du programme
+                        pass
                         
-                        # Si la machine est arrêtée
-                        if self.list_recipes[i].usedmachines[machine].state == "stopped": # Vérification de l'état de la machine
-                            if print_production == True:
-                                print("La machine", self.list_recipes[i].usedmachines[machine].name, "est arrêtée")
-                            while(self.list_recipes[i].usedmachines[machine] == "stopped") :
-                                # Arret de la machine et mise en pause du programme
-                                pass
-                        
-                        # Si la machine est en maintenance
-                        if self.list_recipes[i].usedmachines[machine].state == "maintenance":
-                            if print_production == True:
-                                print("La machine", self.list_recipes[i].usedmachines[machine].name, "est en maintenance")
-                            while(self.list_recipes[i].usedmachines[machine] == "maintenance") :    
-                                # Maintenance de la machine et mise en pause du programme
-                                pass
-                                
-                        # Calcul du temps de production
-                        if total_time == 0:
-                            if print_production == True:
-                                print("Détail du calcul par machine:")
-                        if print_production == True:
-                            print(self.list_recipes[i].usedmachines[machine].cycle_time,"/",self.list_recipes[i].usedmachines[machine].speed/100,"x",total_quantity)
-                        total_time += self.list_recipes[i].usedmachines[machine].cycle_time / ((self.list_recipes[i].usedmachines[machine].speed)/100) * total_quantity # Calcul du temps de production
-                    
-                
-                    
-
+                # Calcul du temps de production
+                if total_time == 0: 
+                    if print_production == True:
+                        print("Détail du calcul par machine:")
+                if print_production == True:
+                    print(recipe.usedmachines[i].cycle_time,"/",recipe.usedmachines[i].speed / 100,"x",total_quantity)
+                total_time += recipe.usedmachines[i].cycle_time / ((recipe.usedmachines[i].speed) / 100) * total_quantity # Calcul du temps de production
+        
                 # Fin de la production
                 if print_production == True:
-                    print("La production de", recipe, "prend", round(total_time, ROUND_SEC), "secondes ou", round(total_time/60, ROUND_MIN), "minutes")
+                    print("La production de", recipe.name, "prend", round(total_time, ROUND_SEC), "secondes ou", round(total_time/60, ROUND_MIN), "minutes")
 
-                if print_simulation == True:
-                    # Simulation du passage sur les machines
-                    for total in range(0,total_quantity):
-                        
+        return total_time
 
-                        # Probabilité d'un aléa
-                        proba = random.randint(0,100)
-                        if proba == 1:
-                            Alea.launch_random_event(self.USINE)
-
-                        for machine in range(0,len(self.list_recipes[i].usedmachines)):
-                            print("[",total,"] Passage sur", self.list_recipes[i].usedmachines[machine].name, ":", self.list_recipes[i].usedmachines[machine].type)
-                            time.sleep(self.list_recipes[i].usedmachines[machine].cycle_time / TIME_SPEED)
-                        if print_production == True:
-                            print("Production de 1",recipe, "terminée.")
-                        
-                        
-                
-
-
-
-                if print_production == True:
-                    print("La production de",quantity, recipe, "(s) est terminée")
-                return total_time
-        
-        else:
-            print("La recette", recipe, "n'existe pas")
-    
-    def order_materials(self, material, quantity):
+    def order_materials(self, material, quantity, print_production):  
         for i in range(len(self.list_materials)):
             if self.list_materials[i].name == material:
                 self.list_materials[i].quantity += quantity
-                #print("Commande de", quantity, "élement(s) de", material, "passée")
+                if print_production == True:
+                    print("Commande de", quantity, "élement(s) de", material, "passée")
                 break
         else:
-            print("Le matériel", material, "n'existe pas")
+            if print_production == True:
+                print("Le matériel", material, "n'existe pas")
+
+
+    def start_production(self, recipe, quantity, machine_filter, print_production):
+        
+        self.find_recipe(recipe, print_production) # Vérification de l'existence de la recette
+        self.calculate_total_quantity(recipe, quantity, print_production) # Calcul de la quantité totale de matériaux
+        self.stock_management(recipe, quantity, print_production) # Gestion du stock de matériaux
+        self.materials_consumption(recipe, quantity, print_production) # Consommation des matériaux
+        self.calculate_production_time(recipe, quantity, machine_filter, print_production) # Calcul du temps de production

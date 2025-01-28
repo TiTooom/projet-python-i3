@@ -20,29 +20,12 @@ class Order:
             print(self.order["Recipe"][i].name, " : ", self.order["Quantity"][i], " pièces")
         
 
-    def machines_capacity(self, usine, print_capacity): # Calcul de la capacité et de la charge de chaque machine sur le carnert de commande
+    def machine_capacity(self, usine, print_capacity, machine_filter, ):
         # Reset de la charge (s)
         load = 0
 
         for i in range(len(self.order["Recipe"])):
-            load += Gestion(usine).start_production(self.order["Recipe"][i].name, self.order["Quantity"][i], "all",False, False) # false permet d'uniquement utiliser le calcul
-                
-        # Capacité totale des machines
-        capacity = len(usine.machines) * WORKING_TIME
-
-        if print_capacity == True:
-            print("\nCharge totale des machines : ", round(load,2), " secondes")  
-            print("Capacité totale des machines : ", round(capacity,2), " secondes")
-            print("Taux de charge des machines : ", round(load/capacity*100, 2), "%")
-
-        return round(load/capacity*100, 2)
-        
-    def machine_capacity(self, usine, machine_filter, print_capacity):
-        # Reset de la charge (s)
-        load = 0
-
-        for i in range(len(self.order["Recipe"])):
-            load += Gestion(usine).start_production(self.order["Recipe"][i].name, self.order["Quantity"][i], machine_filter, False, False) # false permet d'uniquement utiliser le calcul
+            load += Gestion(usine).start_production(self.order["Recipe"][i].name, self.order["Quantity"][i], machine_filter, False, False) # false1=juste calcul ; flase2=filtrage machine
                 
         # Capacité totale de la machine
         capacity = WORKING_TIME
