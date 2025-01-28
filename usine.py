@@ -80,9 +80,6 @@ if __name__ == '__main__':
     # Affichag du carnet de commande de l'usine
     ORDER = Order(USINE)
 
-    # Charge, capacité et taux de charge des machines
-    ORDER.machines_capacity(USINE, True)
-
     # Charge, capacité et taux de charge d'une machine
     ORDER.machine_capacity(USINE, "PM1", True)
     ORDER.machine_capacity(USINE, "PM2", True)
@@ -96,7 +93,7 @@ if __name__ == '__main__':
 
     # Affichage Dashboard
     print("\nAffichage du Dashboard")   
-    dash = DashboardApp(USINE, ORDER, GESTION)
+    #dash = DashboardApp(USINE, ORDER, GESTION)
 
     
 

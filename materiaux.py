@@ -128,17 +128,17 @@ class Gestion:
                     
                     # Si la quantité de matériaux est insuffisante mais supérieure à 0 > Commande automatique de matériaux
                     if self.list_materials[j].quantity < SECURITY_STOCK and self.list_materials[j].quantity >= 0: # Vérification du stock de sécurité
-                        self.order_materials(self.recipe.component[i].name, BATCH_ORDER) # Commande de matériaux
+                        self.order_materials(recipe.component[i], BATCH_ORDER) # Commande de matériaux
                         if print_production == True:
-                            print("Commande de", BATCH_ORDER, "élement(s) de", self.recipe.component[i], "passée pour entretenir le stock de sécurité") 
+                            print("Commande de", BATCH_ORDER, "élement(s) de", recipe.component[i], "passée pour entretenir le stock de sécurité") 
     
                     # Si la commande exige plus que disponible dans le stock > Commande automatique de matériaux (en quantité suffisante)
                     if recipe.quantity[i] * quantity > self.list_materials[j].quantity:
                         if print_production == True:
-                            print("Il n'y a pas assez de", self.recipe.component[i].name,"pour produire", recipe)
-                        self.order_materials(recipe.component[i].name, -(-recipe.quantity[i] * quantity // BATCH_ORDER) * BATCH_ORDER) # Arrondi à l'entier positif supérieur
+                            print("Il n'y a pas assez de", recipe.component[i],"pour produire", recipe.name)
+                        self.order_materials(recipe.component[i], -(-recipe.quantity[i] * quantity // BATCH_ORDER) * BATCH_ORDER) # Arrondi à l'entier positif supérieur
                         if print_production == True:
-                            print("Commande de", -(-self.recipe.component[i].quantity * quantity // BATCH_ORDER) * BATCH_ORDER, "élement(s) de", self.recipe.component[i].name, "passée pour réaliser la commande plus tard.")
+                            print("Commande de", -(-recipe.quantity[i] * quantity // BATCH_ORDER) * BATCH_ORDER, "élement(s) de", recipe.component[i], "passée pour réaliser la commande plus tard.")
                         return 0
                 
     def materials_consumption(self, recipe, quantity, print_production):
@@ -150,11 +150,14 @@ class Gestion:
                     if print_production == True:
                         print("Le stock de", recipe.component[i], "est de",self.list_materials[j].quantity,"élement(s) après consommation")
                     break
-            return self.list_materials
+        return self.list_materials
     
     def calculate_production_time(self, recipe, quantity, print_production, machine_filter):
         total_time = 0 # Initialisation du temps de production
         total_quantity = self.calculate_total_quantity(recipe, quantity, print_production) # Calcul de la quantité totale de matériaux
+
+        if print_production == True:
+            print("\nProduction de", recipe.name, ":", total_quantity, "élement(s)")
 
         for i in range(len(recipe.usedmachines)): # Défilement des machines utilisées pour la recette
             
@@ -209,7 +212,7 @@ class Gestion:
     def start_production(self, recipe, quantity, machine_filter, print_production):
         
         self.find_recipe(recipe, print_production) # Vérification de l'existence de la recette
-        self.calculate_total_quantity(recipe, quantity, print_production) # Calcul de la quantité totale de matériaux
         self.stock_management(recipe, quantity, print_production) # Gestion du stock de matériaux
         self.materials_consumption(recipe, quantity, print_production) # Consommation des matériaux
-        self.calculate_production_time(recipe, quantity, machine_filter, print_production) # Calcul du temps de production
+        capacity = self.calculate_production_time(recipe, quantity, machine_filter, print_production) # Calcul du temps de production
+        return capacity

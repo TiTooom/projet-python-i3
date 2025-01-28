@@ -20,13 +20,12 @@ class Order:
             print(self.order["Recipe"][i].name, " : ", self.order["Quantity"][i], " pièces")
         
 
-    def machine_capacity(self, usine, print_capacity, machine_filter, ):
+    def machine_capacity(self, usine, machine_filter, print_capacity ):
         # Reset de la charge (s)
         load = 0
 
         for i in range(len(self.order["Recipe"])):
-            load += Gestion(usine).start_production(self.order["Recipe"][i].name, self.order["Quantity"][i], machine_filter, False, False) # false1=juste calcul ; flase2=filtrage machine
-                
+            load += Gestion(usine).calculate_production_time(self.order["Recipe"][i], self.order["Quantity"][i],print_capacity, machine_filter) # false1=juste calcul ; flase2=filtrage machine    
         # Capacité totale de la machine
         capacity = WORKING_TIME
 
@@ -41,7 +40,8 @@ class Order:
 
         # Récupération du taux de charge le plus fort
         for index in range(0,len(usine.machines)):
-            val = self.machine_capacity(usine, usine.machines[index].name, False)
+            val = self.machine_capacity(usine, False, usine.machines[index].name)
+            name_overload = usine.machines[index].name
             if (index+1) <= len(usine.machines)-1:
                 if self.machine_capacity(usine, usine.machines[index+1].name, False) > val :
                     val = self.machine_capacity(usine, usine.machines[index+1].name, False)
@@ -50,7 +50,7 @@ class Order:
         # Récupération des taux de charge  > 100%
         stock_overload = []
         for index in range(0,len(usine.machines)):
-            val = self.machine_capacity(usine, usine.machines[index].name, False)
+            val = self.machine_capacity(usine, False, usine.machines[index].name)
             if val > 100:
                 if usine.machines[index].name != name_overload:
                     stock_overload.append(usine.machines[index].name)
@@ -63,7 +63,6 @@ class Order:
     
     def bottleneck(self,usine):
         # Récupération du taux de charge le plus fort
-        name_bottleneck = "empty"  # Initialize name_bottleneck with the first machine's name
         for index in range(0,len(usine.machines)):
             val = usine.machines[index].speed * usine.machines[index].cycle_time / 100 # Vitesse de la machine * temps de cycle
             name_bottleneck = usine.machines[index].name
