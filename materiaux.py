@@ -191,6 +191,8 @@ class Gestion:
                             time.sleep(self.list_recipes[i].usedmachines[machine].cycle_time / TIME_SPEED)
                         if print_production == True:
                             print("Production de 1",recipe, "terminée.")
+                        
+                        
                 
 
 

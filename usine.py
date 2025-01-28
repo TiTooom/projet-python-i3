@@ -1,13 +1,6 @@
-import tkinter as tk
-import threading
-
 from machine import Machine
-from materiaux import Material
-from materiaux import Recipes
 from materiaux import Gestion
-from window import App
 from commandes import Order
-from graph import Graph
 from dashboard import DashboardApp
 
 # Choisir si on veut activer les aléas
@@ -69,13 +62,6 @@ if __name__ == '__main__':
     # Afficher les materiaux de l'usine
     GESTION = Gestion(USINE)
 
-    # Affichag du carnet de commande de l'usine
-    ORDER = Order(USINE)
-
-    # Affichage Dashboard
-    print("\nAffichage du Dashboard")   
-    dash = DashboardApp(USINE, ORDER, GESTION)
-
     # Affichage des recettes et des matériaux
     GESTION.display_materials(True)
     GESTION.display_recipes(True) # True = Affichage des recettes / False = Récuperation des recettes
@@ -94,6 +80,8 @@ if __name__ == '__main__':
     #GESTION.start_production("Pelle à tarte", 1,"all", True)
 
     
+    # Affichag du carnet de commande de l'usine
+    ORDER = Order(USINE)
 
     # Charge, capacité et taux de charge des machines
     ORDER.machines_capacity(USINE, True)
@@ -108,6 +96,10 @@ if __name__ == '__main__':
 
     # Goulot d'étranglement
     ORDER.bottleneck(USINE)
+
+    # Affichage Dashboard
+    print("\nAffichage du Dashboard")   
+    dash = DashboardApp(USINE, ORDER, GESTION)
 
     
 

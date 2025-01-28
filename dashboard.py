@@ -46,8 +46,6 @@ class DashboardApp:
         # Simuler l'envoi de données toutes les 5 secondes
         self.root.after(500, self.simulate_data_update)
 
-        # Lancement de la production
-        #self.order.production_loop(self.usine)
 
         # Mis à jour des graphiques
         self.simulate_data_update()
@@ -101,13 +99,31 @@ class DashboardApp:
         self.canvases[1].draw()
 
     def update_random_chart(self):
-        # Exemple de graphique aléatoire
-        data = [random.uniform(0, 100) for _ in range(10)]
+        # Lancement de la production
+        result = self.order.production_loop(self.usine)
+        if result == "empty":
+            return  # Ne plus appeler cette fonction si la production est terminée
+
+        if len(result) >= 2:
+            name, quantity = result[:2]
+        else:
+            name, quantity = None, 0
+
+        # Conserver les anciennes données
+        if not hasattr(self, 'production_data'):
+            self.production_data = {}
+
+        if name in self.production_data:
+            self.production_data[name] += quantity
+        else:
+            self.production_data[name] = quantity
+
+        # Mise à jour du graphique
         self.axes[2].clear()
-        self.axes[2].plot(data, color='violet')
-        self.axes[2].set_title('Graphique Aléatoire')
-        self.axes[2].set_xlabel('Temps')
-        self.axes[2].set_ylabel('Valeur')
+        self.axes[2].bar(self.production_data.keys(), self.production_data.values(), color='skyblue')
+        self.axes[2].set_title('Quantité Produite par Machine')
+        self.axes[2].set_xlabel('Machines')
+        self.axes[2].set_ylabel('Quantité Produite')
         self.axes[2].grid(axis='y', linestyle='--', alpha=0.7)
         self.canvases[2].draw()
 

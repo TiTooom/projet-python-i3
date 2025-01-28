@@ -96,10 +96,22 @@ class Order:
     def production_loop(self, usine):
         
         # lancement de la production du carnet de commande 
-        for i in range(0,len(self.order["Recipe"])):
-            Gestion(usine).start_production(self.order["Recipe"][i].name, self.order["Quantity"][i], "all", True, True)
-            
+        if len(self.order["Recipe"]) > 0:
 
+            # Lancement de la production
+            Gestion(usine).start_production(self.order["Recipe"][0].name, self.order["Quantity"][0], "all", False, False)
+            
+            # Stockage du premier élément
+            first_recipe = self.order["Recipe"][0].name
+            first_quantity = self.order["Quantity"][0]
+            
+            # Suppression de l'élement
+            self.order["Recipe"].pop(0)
+            self.order["Quantity"].pop(0)
+            
+            return first_recipe, first_quantity
+        else:
+            return "empty"
 
         
         
