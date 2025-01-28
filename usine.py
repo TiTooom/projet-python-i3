@@ -8,6 +8,7 @@ from materiaux import Gestion
 from window import App
 from commandes import Order
 from graph import Graph
+from dashboard import DashboardApp
 
 # Choisir si on veut activer les aléas
 ALLOW_ALEA = False
@@ -67,7 +68,16 @@ if __name__ == '__main__':
     
     # Afficher les materiaux de l'usine
     GESTION = Gestion(USINE)
-    GESTION.display_materials()
+
+    # Affichag du carnet de commande de l'usine
+    ORDER = Order(USINE)
+
+    # Affichage Dashboard
+    print("\nAffichage du Dashboard")   
+    dash = DashboardApp(USINE, ORDER, GESTION)
+
+    # Affichage des recettes et des matériaux
+    GESTION.display_materials(True)
     GESTION.display_recipes(True) # True = Affichage des recettes / False = Récuperation des recettes
     
     # Vérification de la disponibilité des matériaux
@@ -76,19 +86,14 @@ if __name__ == '__main__':
 
     # Lancement en prodction d'une recette
     print("\nExemple de production :")
-    GESTION.start_production("Couteau", 1, "all",True)
-    GESTION.start_production("Fourchette", 100000,"all", True)
+    GESTION.start_production("Couteau", 1, "all",True, True)
+    GESTION.start_production("Fourchette", 1,"all", True, True)
     #GESTION.start_production("Cuillère", 1,"all", True)
     #GESTION.start_production("Spatule", 1,"all", True)
     #GESTION.start_production("Louche", 1,"all", True)
     #GESTION.start_production("Pelle à tarte", 1,"all", True)
 
-    # Affichag du carnet de commande de l'usine
-    ORDER = Order(USINE)
-
-    # Lancement d'un aléa aléatoire
-    if ALLOW_ALEA:
-        Alea.launch_random_event(USINE)
+    
 
     # Charge, capacité et taux de charge des machines
     ORDER.machines_capacity(USINE, True)
@@ -104,14 +109,6 @@ if __name__ == '__main__':
     # Goulot d'étranglement
     ORDER.bottleneck(USINE)
 
-    # Affichage graphes taux de charge
     
-    
-    Graph.capacity_chart(USINE,ORDER)
 
-    Graph.stock_chart(GESTION.list_materials)
-
-    # Boucle de la simulation (envoyer USINE et GESTION en paramètre) 
-    #App.set_up()
-        
 

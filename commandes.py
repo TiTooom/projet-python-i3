@@ -11,7 +11,7 @@ class Order:
         
         # Création d un dictionnaire de commande
         self.order = {"Recipe": [self.recipes[0], self.recipes[1], self.recipes[2], self.recipes[3], self.recipes[4], self.recipes[5]], 
-                      "Quantity": [35000, 41000, 32000, 54000, 39000, 72000]} #
+                      "Quantity": [3500, 4100, 3200, 5400, 3900, 7200]} #
 
                       
         # Affichage du carnet de commande
@@ -25,7 +25,7 @@ class Order:
         load = 0
 
         for i in range(len(self.order["Recipe"])):
-            load += Gestion(usine).start_production(self.order["Recipe"][i].name, self.order["Quantity"][i], "all",False) # false permet d'uniquement utiliser le calcul
+            load += Gestion(usine).start_production(self.order["Recipe"][i].name, self.order["Quantity"][i], "all",False, False) # false permet d'uniquement utiliser le calcul
                 
         # Capacité totale des machines
         capacity = len(usine.machines) * WORKING_TIME
@@ -42,7 +42,7 @@ class Order:
         load = 0
 
         for i in range(len(self.order["Recipe"])):
-            load += Gestion(usine).start_production(self.order["Recipe"][i].name, self.order["Quantity"][i], machine_filter, False) # false permet d'uniquement utiliser le calcul
+            load += Gestion(usine).start_production(self.order["Recipe"][i].name, self.order["Quantity"][i], machine_filter, False, False) # false permet d'uniquement utiliser le calcul
                 
         # Capacité totale de la machine
         capacity = WORKING_TIME
@@ -93,9 +93,12 @@ class Order:
 
         return name_bottleneck
 
-
-                
-
+    def production_loop(self, usine):
+        
+        # lancement de la production du carnet de commande 
+        for i in range(0,len(self.order["Recipe"])):
+            Gestion(usine).start_production(self.order["Recipe"][i].name, self.order["Quantity"][i], "all", True, True)
+            
 
 
         

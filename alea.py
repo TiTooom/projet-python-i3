@@ -5,7 +5,7 @@ import logging
 import os
 import time
 
-from usine import Factory
+TIME_SLEEP = 1
 
 class Alea:
 
@@ -26,7 +26,7 @@ class Alea:
 
         # Choix aléatoire d'un aléa
         alea_number = randint(0, len(factory.alea)-1)
-        print("\nAléa choisi : ", factory.alea[alea_number].name)
+        print("\nAléa survenu : ", factory.alea[alea_number].name)
         print("Description de l'aléa : ", factory.alea[alea_number].description)
         logging.critical(f"Alea apparu : {factory.alea[alea_number].name}")
         
@@ -38,13 +38,7 @@ class Alea:
         # Durée de l'aléa
         print("Durée de l'aléa : ", factory.alea[alea_number].duration, " secondes")
         logging.info(f"Duree de l'alea : {factory.alea[alea_number].duration} secondes")
-        time.sleep(factory.alea[alea_number].duration) # pause de la durée de l'aléa
-        
-        # Fin de l'aléa
-        factory.alea[alea_number].factory.machines[alea_number].state = "running"
-        print("L'état de la machine ", factory.alea[alea_number].factory.machines[alea_number].name, " est : ", factory.alea[alea_number].factory.machines[alea_number].state)
-        logging.info(f"L'etat de la machine {factory.alea[alea_number].factory.machines[alea_number].name} est : {factory.alea[alea_number].factory.machines[alea_number].state}")
-
+        time.sleep(factory.alea[alea_number].duration / TIME_SLEEP) # pause de la durée de l'aléa
 
 # Configuration du logger (une seule fois au début du programme)
 def setup_logger(log_file_path):

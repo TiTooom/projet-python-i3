@@ -1,7 +1,13 @@
+import time
+import random
+
+from alea import Alea
+
 SECURITY_STOCK = 10000 # Stock de sécurité
 BATCH_ORDER = 7000 # Quantité à commander pour les matériaux
 ROUND_SEC = 3 # Arrondi pour les temps de production (N chiffre(s) après la virgule)
 ROUND_MIN = 3 # Arrondi pour les temps de production (N chiffre(s) après la virgule)
+TIME_SPEED = 1 # Accéleration virtuelle du temps de production
 
 class Material:
     def __init__(self, name, quantity, price):
@@ -65,13 +71,13 @@ class Gestion:
         self.list_recipes.append(recipe5)
         self.list_recipes.append(recipe6)
 
-        return self.list_materials
-
     # Affichage des matériaux
-    def display_materials(self): 
-        print("\nListe des matériaux : ")
-        for i in range(len(self.list_materials)):
-            print(self.list_materials[i].name, " : ", self.list_materials[i].quantity, "kg : ", self.list_materials[i].price,"€/kg")
+    def display_materials(self, print_materials): 
+        
+        if print_materials == True:
+            print("\nListe des matériaux : ")
+            for i in range(len(self.list_materials)):
+                print(self.list_materials[i].name, " : ", self.list_materials[i].quantity, "kg : ", self.list_materials[i].price,"€/kg")
         return self.list_materials
 
     # Affichage des recettes
@@ -88,8 +94,11 @@ class Gestion:
             if self.list_materials[i].name == material:
                 print(self.list_materials[i].quantity,"élement(s) de", material, "sont disponibles")
                  
-    def start_production(self, recipe, quantity, machine_filter,print_production):
+    def start_production(self, recipe, quantity, machine_filter,print_production, print_simulation):
+
         for i in range(len(self.list_recipes)):
+
+            # Vérification de l'existence de la recette
             if self.list_recipes[i].name == recipe: 
                 #Lacement de la production
                 total_quantity = 0
@@ -106,7 +115,7 @@ class Gestion:
                         
                         # Commande de stock pour entretenir le stock de sécurité
                         if material.name == self.list_recipes[i].component[j]: # Vérification de l'existence du matériel
-                            if material.quantity < SECURITY_STOCK and SECURITY_STOCK >= 0: # Vérification du stock de sécurité
+                            if material.quantity < SECURITY_STOCK and material.quantity >= 0: # Vérification du stock de sécurité
                                 self.order_materials(self.list_recipes[i].component[j], BATCH_ORDER) # Commande de matériaux
                                 if print_production == True:
                                     print("Commande de", BATCH_ORDER, "élement(s) de", self.list_recipes[i].component[j], "passée pour entretenir le stock de sécurité") 
@@ -134,19 +143,25 @@ class Gestion:
                     if machine_filter == self.list_recipes[i].usedmachines[machine].name or machine_filter == "all":
                         if print_production == True:
                             print("Passage sur", self.list_recipes[i].usedmachines[machine].name, ":", self.list_recipes[i].usedmachines[machine].type)
+                            
+                        
+                        # Si la machine est arrêtée
                         if self.list_recipes[i].usedmachines[machine].state == "stopped": # Vérification de l'état de la machine
                             if print_production == True:
                                 print("La machine", self.list_recipes[i].usedmachines[machine].name, "est arrêtée")
-                            while(1) :
+                            while(self.list_recipes[i].usedmachines[machine] == "stopped") :
                                 # Arret de la machine et mise en pause du programme
                                 pass
+                        
+                        # Si la machine est en maintenance
                         if self.list_recipes[i].usedmachines[machine].state == "maintenance":
                             if print_production == True:
                                 print("La machine", self.list_recipes[i].usedmachines[machine].name, "est en maintenance")
-                            while(1) :
+                            while(self.list_recipes[i].usedmachines[machine] == "maintenance") :    
                                 # Maintenance de la machine et mise en pause du programme
                                 pass
                                 
+                        # Calcul du temps de production
                         if total_time == 0:
                             if print_production == True:
                                 print("Détail du calcul par machine:")
@@ -154,9 +169,34 @@ class Gestion:
                             print(self.list_recipes[i].usedmachines[machine].cycle_time,"/",self.list_recipes[i].usedmachines[machine].speed/100,"x",total_quantity)
                         total_time += self.list_recipes[i].usedmachines[machine].cycle_time / ((self.list_recipes[i].usedmachines[machine].speed)/100) * total_quantity # Calcul du temps de production
                     
+                
+                    
+
+                # Fin de la production
                 if print_production == True:
                     print("La production de", recipe, "prend", round(total_time, ROUND_SEC), "secondes ou", round(total_time/60, ROUND_MIN), "minutes")
-                    print("La production de ", quantity, recipe, "(s) est terminée")
+
+                if print_simulation == True:
+                    # Simulation du passage sur les machines
+                    for total in range(0,total_quantity):
+                        
+
+                        # Probabilité d'un aléa
+                        proba = random.randint(0,100)
+                        if proba == 1:
+                            Alea.launch_random_event(self.USINE)
+
+                        for machine in range(0,len(self.list_recipes[i].usedmachines)):
+                            print("[",total,"] Passage sur", self.list_recipes[i].usedmachines[machine].name, ":", self.list_recipes[i].usedmachines[machine].type)
+                            time.sleep(self.list_recipes[i].usedmachines[machine].cycle_time / TIME_SPEED)
+                        if print_production == True:
+                            print("Production de 1",recipe, "terminée.")
+                
+
+
+
+                if print_production == True:
+                    print("La production de",quantity, recipe, "(s) est terminée")
                 return total_time
         
         else:

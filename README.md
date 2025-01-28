@@ -41,7 +41,8 @@ Le temps de traitement.
 - fichier "materiaux.py", classe "Gestion", fonction "start_production" 
 
 Mettre en pause la production si une machine est en panne ou en maintenance.
-- fichier "materiaux.py", classe "Gestion", fonction "start_production" 
+- fichier "materiaux.py", classe "Gestion", fonction "start_production"
+
 
 ## 4. Détection et gestion des anomalies
 
@@ -72,7 +73,9 @@ Le taux de production.
 -> machine la plus surchargée
 
 Les anomalies détectées. 
-- fichier "alea.py", classe "Alea", fonction "launch_random_event" -> écriture de l'incident dans un fichier log
+- fichier "alea.py", classe "Alea", fonction "launch_random_event" 
+-> écriture de l'incident dans un fichier log
+-> génération d'un incident aléatoire qui se règle seul au bout d'un certain temps
 
 L'état des stocks. 
 - fichier "materiaux.py", classe "Gestion", fonction "start_production" 
@@ -82,7 +85,8 @@ L'état des stocks.
 Afficher un tableau de bord en terminal ou avec une bibliothèque graphique comme matplotlib pour 
 visualiser :
 L’évolution des stocks.
-- [A FAIRE]
+- fichier "graph.py" classe "Graph"
+-> génération d'un graphe en barre représentant l'état des stocks 
 
 Le fonctionnement des machines.
 - [A FAIRE]
