@@ -1,5 +1,4 @@
 # Fichier contenant le carnet de commande de l'usine
-from materiaux import Recipes
 from materiaux import Gestion
 
 WORKING_TIME = 8 * 3600 # 8h de travail en secondes
@@ -12,16 +11,17 @@ class Order:
         # Création d un dictionnaire de commande
         self.order = {"Recipe": [self.recipes[0], self.recipes[1], self.recipes[2], self.recipes[3], self.recipes[4], self.recipes[5]], 
                       "Quantity": [3500, 4100, 3200, 5400, 3900, 7200]} #
-
-                      
+       
         # Affichage du carnet de commande
         print("\nListe des commandes : ")
         for i in range(len(self.order["Recipe"])):
             print(self.order["Recipe"][i].name, " : ", self.order["Quantity"][i], " pièces")
         
+    # Récupération de la commande
     def get_order(self):
         return self.order
 
+    # Calcul de la capacité de la machine
     def machine_capacity(self, usine, machine_filter, print_capacity):
         # Reset de la charge (s)
         load = 0
@@ -39,6 +39,7 @@ class Order:
 
         return round(load/capacity*100, 2)
 
+    # Calcul de la surcharge
     def overload(self,usine):
 
         # Récupération du taux de charge le plus fort
@@ -64,6 +65,7 @@ class Order:
 
         return stock_overload, name_overload
     
+    # Calcul du goulot d'étranglement
     def bottleneck(self,usine):
         # Récupération du taux de charge le plus fort
         name_bottleneck = "empty"  # Initialize name_bottleneck with the first machine's name

@@ -2,6 +2,7 @@ from machine import Machine
 from materiaux import Gestion
 from commandes import Order
 from dashboard import DashboardApp
+from alea import Alea
 
 # Choisir si on veut activer les aléas
 ALLOW_ALEA = False
@@ -20,14 +21,14 @@ class Factory:
         self.alea = [] #liste des aléas de l'usine
 
 
-
+global get_usine_info
 
 if __name__ == '__main__':
 
     print("\nDébut de la simulation")   
 
     # Création de l'usine 
-    USINE = Factory("ConnectProd Industries", "France", 972000)
+    USINE = Factory("ConnectProd Industries", "France", 100000)
 
     # Création de machines 
     machine1 = Machine("PM1", "Découpe", 95, 0.11, "running")
@@ -40,10 +41,9 @@ if __name__ == '__main__':
     USINE.machines.append(machine3)
 
     # Création des aléas de l'usine
-    from alea import Alea
-    alea1 = Alea(USINE, "Bourage",USINE.machines[0], "Arret de la machine ", 3, "stopped")
-    alea2 = Alea(USINE, "Probleme electrique",USINE.machines[1], "Arret de la machine ", 3, "stopped")
-    alea3 = Alea(USINE, "Maintenance",USINE.machines[2], "Arret de la machine ", 3, "maintenance")
+    alea1 = Alea(USINE, "Bourage",USINE.machines[0], "Arret de la machine ", 1, "stopped")
+    alea2 = Alea(USINE, "Probleme electrique",USINE.machines[1], "Arret de la machine ", 1, "stopped")
+    alea3 = Alea(USINE, "Maintenance",USINE.machines[2], "Arret de la machine ", 1, "maintenance")
 
     # Ajout des aléas à l'usine
     USINE.alea.append(alea1)
@@ -74,9 +74,7 @@ if __name__ == '__main__':
     print("\nExemple de production :")
     GESTION.start_production(recipes[0],1,"all",True, "capacity")
 
-    
 
-    
     # Affichag du carnet de commande de l'usine
     ORDER = Order(USINE)
 
@@ -95,6 +93,5 @@ if __name__ == '__main__':
     print("\nAffichage du Dashboard")   
     dash = DashboardApp(USINE, ORDER, GESTION)
 
-    GESTION.display_materials(True)
 
 

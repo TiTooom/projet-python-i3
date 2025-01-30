@@ -1,3 +1,5 @@
+# Fichier config machines
+
 class Machine:
     def __init__(self, name, type, speed, cycle_time, state):
         self.name = name #nom de la machine -> PM1, PM2, PM3
