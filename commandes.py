@@ -22,15 +22,12 @@ class Order:
     def get_order(self):
         return self.order
 
-
-
-
     def machine_capacity(self, usine, machine_filter, print_capacity):
         # Reset de la charge (s)
         load = 0
 
         for i in range(len(self.order["Recipe"])):
-            load += Gestion(usine).start_production(self.order["Recipe"][i], self.order["Quantity"][i], machine_filter, False) # false permet d'uniquement utiliser le calcul
+            load += Gestion(usine).start_production(self.order["Recipe"][i], self.order["Quantity"][i], machine_filter, False, "capacity") # false permet d'uniquement utiliser le calcul
                 
         # Capacité totale de la machine
         capacity = WORKING_TIME

@@ -63,7 +63,7 @@ class DashboardApp:
         self.update_info_display(self.usine)
         self.update_capacity_chart(self.usine, self.order)
         self.update_stock_chart(materials)
-        self.update_random_chart()
+        self.update_production_order()
 
         # Planifier la prochaine mise à jour
         self.root.after(5000, self.simulate_data_update)
@@ -101,20 +101,27 @@ class DashboardApp:
         self.axes[1].grid(axis='y', linestyle='--', alpha=0.7)
         self.canvases[1].draw()
 
-    def update_random_chart(self):
+    def update_production_order(self):
         if not self.list_order["Recipe"]:
             return
 
         if not hasattr(self, 'produced_data'):
             self.produced_data = {'name': [], 'quantity': []}
 
+
         # Prendre le premier élément de la liste
+        recipe = self.list_order["Recipe"][0]
         name = self.list_order["Recipe"].pop(0).name
         quantity = self.list_order["Quantity"].pop(0)
+
+        
 
         # Sauvegarde des données et continuer de les afficher sur le graphique
         self.produced_data['name'].append(name)
         self.produced_data['quantity'].append(quantity)
+
+        # Lancement réel production avec calcul et maj stock
+        self.gestion.start_production(recipe, quantity, "all", False, "capacity")
 
         # Mise à jour du graphique
         self.axes[2].clear()

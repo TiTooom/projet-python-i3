@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
     # Lancement en prodction d'une recette
     print("\nExemple de production :")
-    GESTION.start_production(recipes[0],1,"all",True)
+    GESTION.start_production(recipes[0],1,"all",True, "capacity")
 
     
 
@@ -95,6 +95,6 @@ if __name__ == '__main__':
     print("\nAffichage du Dashboard")   
     dash = DashboardApp(USINE, ORDER, GESTION)
 
-    
+    GESTION.display_materials(True)
 
 
