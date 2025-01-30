@@ -9,9 +9,13 @@ import random
 
 class DashboardApp:
     def __init__(self, USINE, ORDER, GESTION):
+        
         self.usine = USINE
         self.order = ORDER
         self.gestion = GESTION
+
+        self.list_order = self.order.get_order()
+
         self.root = tk.Tk()
         self.root.title("Tableau de Bord de Production")
         self.root.geometry("1300x800")
@@ -98,28 +102,23 @@ class DashboardApp:
         self.canvases[1].draw()
 
     def update_random_chart(self):
-        # Lancement de la production
-        result = self.order.production_loop(self.usine)
-        if result == "empty":
-            return  # Ne plus appeler cette fonction si la production est terminée
+        if not self.list_order["Recipe"]:
+            return
 
-        if len(result) >= 2:
-            name, quantity = result[:2]
-        else:
-            name, quantity = None, 0
+        if not hasattr(self, 'produced_data'):
+            self.produced_data = {'name': [], 'quantity': []}
 
-        # Conserver les anciennes données
-        if not hasattr(self, 'production_data'):
-            self.production_data = {}
+        # Prendre le premier élément de la liste
+        name = self.list_order["Recipe"].pop(0).name
+        quantity = self.list_order["Quantity"].pop(0)
 
-        if name in self.production_data:
-            self.production_data[name] += quantity
-        else:
-            self.production_data[name] = quantity
+        # Sauvegarde des données et continuer de les afficher sur le graphique
+        self.produced_data['name'].append(name)
+        self.produced_data['quantity'].append(quantity)
 
         # Mise à jour du graphique
         self.axes[2].clear()
-        self.axes[2].bar(self.production_data.keys(), self.production_data.values(), color='skyblue')
+        self.axes[2].bar(self.produced_data['name'], self.produced_data['quantity'], color='skyblue')
         self.axes[2].set_title('Quantité Produite par Machine')
         self.axes[2].set_xlabel('Machines')
         self.axes[2].set_ylabel('Quantité Produite')

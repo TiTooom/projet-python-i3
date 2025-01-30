@@ -101,14 +101,14 @@ class Gestion:
         for i in range(len(self.list_recipes)):
             if self.list_recipes[i].name == recipe.name:
                 if print_production == True:
-                    print("La recette", recipe.name, "existe")
-                return recipe
+                    print("\nLa recette", recipe.name, "existe")
+                return self.list_recipes[i]
         else:
             if print_production == True:
-                print("La recette", recipe.name, "n'existe pas")
+                print("\nLa recette", recipe.name, "n'existe pas")
             return 0
         
-    def calculate_total_quantity(self,recipe, quantity, print_production):
+    def calculate_total_quantity(self, recipe, quantity, print_production):
         # Si la recette existe
         if self.find_recipe(recipe, False) != 0:
             total_quantity = 0 # Initialisation de la quantité totale
@@ -154,13 +154,13 @@ class Gestion:
     
     def calculate_production_time(self, recipe, quantity, print_production, machine_filter):
         total_time = 0 # Initialisation du temps de production
-        total_quantity = self.calculate_total_quantity(recipe, quantity, print_production) # Calcul de la quantité totale de matériaux
-
+        total_quantity = self.calculate_total_quantity(recipe, quantity, False) # Calcul de la quantité totale de matériaux
+        
         if print_production == True:
-            print("\nProduction de", recipe.name, ":", total_quantity, "élement(s)")
+            print("Production de", recipe.name, ":", total_quantity, "élement(s)")
 
+        
         for i in range(len(recipe.usedmachines)): # Défilement des machines utilisées pour la recette
-            
             # Si la machine est sélectionnée ou si toutes les machines sont sélectionnées
             if machine_filter == recipe.usedmachines[i].name or machine_filter == "all":
             
@@ -190,7 +190,6 @@ class Gestion:
                 if print_production == True:
                     print(recipe.usedmachines[i].cycle_time,"/",recipe.usedmachines[i].speed / 100,"x",total_quantity)
                 total_time += recipe.usedmachines[i].cycle_time / ((recipe.usedmachines[i].speed) / 100) * total_quantity # Calcul du temps de production
-        
                 # Fin de la production
                 if print_production == True:
                     print("La production de", recipe.name, "prend", round(total_time, ROUND_SEC), "secondes ou", round(total_time/60, ROUND_MIN), "minutes")
@@ -214,5 +213,5 @@ class Gestion:
         self.find_recipe(recipe, print_production) # Vérification de l'existence de la recette
         self.stock_management(recipe, quantity, print_production) # Gestion du stock de matériaux
         self.materials_consumption(recipe, quantity, print_production) # Consommation des matériaux
-        capacity = self.calculate_production_time(recipe, quantity, machine_filter, print_production) # Calcul du temps de production
+        capacity = self.calculate_production_time(recipe, quantity, print_production, machine_filter) # Calcul du temps de production
         return capacity
