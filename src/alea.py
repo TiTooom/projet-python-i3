@@ -8,8 +8,10 @@ import time
 
 import database
 
-TIME_SLEEP = 1 # Accelérer le temps de l'aléa
-ALEA_PROBA = 90 # probabilité de ne pas avoir d'aléa
+ALLOW_ALEA = True # Choisir si on veut activer les aléas
+
+TIME_SLEEP = 2 # Accelérer le temps de l'aléa
+ALEA_PROBA = 97 # probabilité de ne pas avoir d'aléa
 
 class Alea:
 
@@ -26,7 +28,7 @@ class Alea:
         setup_logger(log_file)
 
     @staticmethod
-    def launch_random_event(factory):
+    def launch_random_event(factory): # générer un événement aléatoire
 
         # Choix aléatoire d'un aléa
         alea_number = random.randint(0, len(factory.alea)-1)
@@ -52,7 +54,10 @@ class Alea:
 
 
 
-    def start_event_proba(factory):
+    def start_event_proba(factory): # lancer un événement aléatoire
+        
+        if ALLOW_ALEA == False:
+            return False
         # Probabilité d'aléa
         proba = random.randint(0, 100)
         if proba > ALEA_PROBA:

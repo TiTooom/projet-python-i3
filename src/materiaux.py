@@ -1,8 +1,7 @@
 import time
-import random
 
 from alea import Alea
-import database
+import database 
 
 SECURITY_STOCK = 10000 # Stock de sécurité
 BATCH_ORDER = 7000 # Quantité à commander pour les matériaux
@@ -13,9 +12,9 @@ REPAIR_TIME = 5 # Temps de réparation d'une machine
 
 class Material:
     def __init__(self, name, quantity, price):
-        self.name = name
-        self.quantity = quantity
-        self.price = price
+        self.name = name #nom du matériau
+        self.quantity = quantity #quantité du matériau
+        self.price = price #prix du matériau/kg
 
 
 class Recipes:
@@ -96,9 +95,6 @@ class Gestion:
             if self.list_materials[i].name == material:
                 print(self.list_materials[i].quantity,"élement(s) de", material, "sont disponibles")
 
-
-
-   
     def find_recipe(self, recipe, print_production):
         for i in range(len(self.list_recipes)):
             if self.list_recipes[i].name == recipe.name:
@@ -177,9 +173,6 @@ class Gestion:
         for i in range(len(recipe.usedmachines)): # Défilement des machines utilisées pour la recette
             # Si la machine est sélectionnée ou si toutes les machines sont sélectionnées
             if machine_filter == recipe.usedmachines[i].name or machine_filter == "all":
-
-                
-            
                 if print_production == True:
                     Alea.start_event_proba(self.USINE) # Lancement d'un aléa aléatoire
 
@@ -207,7 +200,6 @@ class Gestion:
                         time.sleep(REPAIR_TIME) # Pause de 1 seconde
                         recipe.usedmachines[i].state = "running" # Relance de la machine
                         
-                        
                 # Calcul du temps de production
                 if total_time == 0: 
                     if print_production == True:
@@ -218,7 +210,6 @@ class Gestion:
                 # Fin de la production
         if print_production == True:
             print("La production de", recipe.name, "prend", round(total_time, ROUND_SEC), "secondes ou", round(total_time/60, ROUND_MIN), "minutes")
-
         return total_time
 
     def order_materials(self, material, quantity, print_production):  
@@ -234,9 +225,16 @@ class Gestion:
 
     def start_production(self, recipe, quantity, machine_filter, print_production, choice):
         
+        # Verifie si la recette existe
         self.find_recipe(recipe, print_production) # Vérification de l'existence de la recette
+        
+        # Verifie si le stock est suffisant
         self.stock_management(recipe, quantity, print_production) # Gestion du stock de matériaux
+        
+        # Consommation des matériaux
         self.list_materials = self.materials_consumption(recipe, quantity, print_production) # Consommation des matériaux
+        
+        # Calcul du temps de production
         capacity = self.calculate_production_time(recipe, quantity, print_production, machine_filter) # Calcul du temps de production
         
         #Choix du return 

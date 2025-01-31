@@ -62,13 +62,11 @@ class Order:
         
         
         print("\nLa machine :", name_overload, "est la plus surchagée avec un taux de charge de ", val, "%")
-
         return stock_overload, name_overload
     
     # Calcul du goulot d'étranglement
     def bottleneck(self,usine):
         # Récupération du taux de charge le plus fort
-        name_bottleneck = "empty"  # Initialize name_bottleneck with the first machine's name
         for index in range(0,len(usine.machines)):
             val = usine.machines[index].speed * usine.machines[index].cycle_time / 100 # Vitesse de la machine * temps de cycle
             name_bottleneck = usine.machines[index].name

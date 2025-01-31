@@ -6,7 +6,8 @@ import time
 
 import database
 
-TIME_SPEED = 5000 # Vitesse de simulation graphique
+TIME_SPEED = 4000 # Vitesse de simulation graphique (attention : plus la valeur est basse, plus le dashboard met de temps à s'afficher)
+
 
 
 
@@ -37,7 +38,7 @@ class DashboardApp:
         self.info_frame = ttk.Frame(self.root)
         self.info_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        self.info_label = ttk.Label(self.info_frame, text="Informations des Machines:")
+        self.info_label = ttk.Label(self.info_frame, text="Informations des Machines :")
         self.info_label.pack(side=tk.TOP, padx=10, pady=10)
 
         self.info_text = tk.Text(self.info_frame, height=10, width=80)
@@ -65,6 +66,8 @@ class DashboardApp:
 
         # Mis à jour des graphiques
         self.simulate_data_update()
+
+        # Lancer la boucle principale
         self.root.mainloop()
         
     def simulate_data_update(self):
@@ -82,22 +85,29 @@ class DashboardApp:
 
     def update_info_display(self, usine):
         self.info_text.delete(1.0, tk.END)
-        self.info_text.insert(tk.END, f"[STATE] : 'NAME' > CAPACITY (%) > SPEED (%) > CYCLE TIME (item/sec)\n")
+        self.info_text.insert(tk.END, f"[STATE] : 'NAME' : CAPACITY (%) : SPEED (%) : CYCLE TIME (sec/item)\n")
         for machine in usine.machines:
-            self.info_text.insert(tk.END, f"[{machine.state}] : '{machine.name}' > {self.order.machine_capacity(self.usine, machine.name, False)}% > {machine.speed}% > {machine.cycle_time}sec\n")
+            self.info_text.insert(tk.END, f"[{machine.state}] : '{machine.name}' : {self.order.machine_capacity(self.usine, machine.name, False)} % : {machine.speed} % : {machine.cycle_time} sec/item\n")
+        
+        # Affichage des machines en surcharge
+        for machine in usine.machines:
+            if self.order.machine_capacity(self.usine, machine.name, False) > 100:
+                self.info_text.insert(tk.END, f"[WARNING] Machine '{machine.name}' en surcharge : {self.order.machine_capacity(self.usine, machine.name, False)}%\n")
 
         # Affichage des informations de la ligne si la liste n'est pas vide
         if database.db_stock and self.index_stock < len(database.db_stock['component']):
-            self.info_text.insert(tk.END, f"\n Commande de {database.db_stock['quantity'][self.index_stock]} '{database.db_stock['component'][self.index_stock]}' > {database.db_stock['reason'][self.index_stock]}\n")
+            self.info_text.insert(tk.END, f"\n Commande de {database.db_stock['quantity'][self.index_stock]} '{database.db_stock['component'][self.index_stock]}' : {database.db_stock['reason'][self.index_stock]}\n")
             self.index_stock += 1
 
         if database.db_alea and self.index_alea < len(database.db_alea['name']):
-            self.info_text.insert(tk.END, f"\n Aléa survenu : {database.db_alea['name'][self.index_alea]} > {database.db_alea['message'][self.index_alea]}\n")
+            self.info_text.insert(tk.END, f"\n[WARNING] : {database.db_alea['name'][self.index_alea]} : {database.db_alea['message'][self.index_alea]}\n")
             self.index_alea += 1
 
         
 
     def update_capacity_chart(self, usine, order):
+       
+       # Récupérer les taux de charge des machines
         taux_charge = []
         name_machines = []
         for machine in usine.machines:
@@ -113,9 +123,11 @@ class DashboardApp:
         self.canvases[0].draw()
 
     def update_stock_chart(self, materials):
+        # Récupérer les noms et les quantités des matériaux
         material_names = [material.name for material in materials]
         quantities = [material.quantity for material in materials]
 
+        # Mettre à jour le graphique
         self.axes[1].clear()
         self.axes[1].bar(material_names, quantities, color='palegreen')
         self.axes[1].set_title('Quantité des matériaux')
@@ -154,7 +166,7 @@ class DashboardApp:
 
         # Lancement réel production avec calcul et maj stock
         self.gestion.start_production(recipe, quantity, "all", True, "capacity")
-        time.sleep(1)
+        time.sleep(3)
 
         # Mise à jour du graphique
         self.axes[2].clear()

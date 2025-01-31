@@ -1,92 +1,14 @@
-# Récapitulatif du projet par rapport au sujet en PDF :
+# Simulation de la ligne de production
 
-## 1. Initialisation de l'usine
+Vous avez récemment intégré le poste d'ingénieur dans l'entreprise, ConnectProd Industries, spécialisée dans la production d’ustensiles de cuisine haut de gamme à base d’aluminium.
 
-Usine : contient les informations générales (nom, localisation, capacité de stockage).
-- fichier "usine.py", classe "Factory" puis instance dans main x1
+L’entreprise est à la pointe de l’industrie 4.0 et souhaite simuler une nouvelle ligne de production connectée avant de l’implémenter dans ses usines.
 
-Machine : a des attributs tels que type, débit maximal, temps de cycle, et état (actif, en panne, en 
-maintenance).
-- fichier "machine.py", classe "Machine" puis instance dans main x3
+Ce projet vous a été confié.
 
-Matériaux : inclut nom, quantité disponible, et coût.
-- fichier "materiaux.py", classe "Material" puis instance dans classe "Gestion" x6
+Votre mission : développer une application Python qui simulera cette usine connectée. Cette simulation doit permettre à l’entreprise de :
 
-## 2. Gestion des recettes et production
-
-Définir des recettes sous forme de dictionnaires (exemple : Aluminium -> Fourchette nécessite 5 unités 
-d'Aluminium).
-- fichier "materiaux.py", classe "Recipe" puis instance dans classe "Gestion" x6 
-
-Implémenter une fonction pour :
-Vérifier la disponibilité des matériaux.
-- fichier "materiaux.py", classe "Gestion", fonction "available_material" -> vérifie la disponibilité des matériaux
-
-Déclencher le processus de production.
-- fichier "materiaux.py", classe "Gestion", fonction "start_production" -> déclenche la production d'une recette
-
-Simuler le temps requis en fonction des machines disponibles.
-- fichier "materiaux.py", classe "Gestion", fonction "start_production" (fonction générale incluant plusieurs processus)
-
-## 3. Gestion des flux et des machines
-
-Ajouter un mécanisme de file d'attente pour les matières premières à transformer.
-- fichier "commandes.py", définition d'un carnet de commande qui va être envoyé en production [A COMPLETER]
-
-Simuler le fonctionnement de plusieurs machines, en prenant en compte :
-Le nombre de machines nécessaires pour une recette.
-- fichier "materiaux.py", classe "Recipe", définitions des machines à utiliser pour chaque recette (stockées dans la liste usedmachines[]) 
-
-Le temps de traitement.
-- fichier "materiaux.py", classe "Gestion", fonction "start_production" 
-
-Mettre en pause la production si une machine est en panne ou en maintenance.
-- fichier "materiaux.py", classe "Gestion", fonction "start_production"
-
-
-## 4. Détection et gestion des anomalies
-
-Créer une fonction pour détecter des anomalies courantes, telles que :
-Pannes de machines : simulation aléatoire.
-- fichier "alea.py", classe "Alea", fonction "launch_random_event" -> déclenche une panne aléatoire avec un délai avant réparation
-
-Manque de matériaux : message d’alerte. 
-- fichier "materiaux.py", classe "Gestion", fonction "start_production" 
--> vérifie si le stock de sécurité est dépassé
--> commande des matériaux si nécessaire (fonction "order_materials") avec un lot de commande
-
-Dépassement de capacité : déclenchement d’un état critique.
-- [A FAIRE]
-
-Intégrer un journal des anomalies (log des incidents).
-- fichier "alea.py", classe "Alea", fonction "launch_random_event" -> écriture de l'incident dans un fichier log
-
-## 5. Visualisation et rapports
-
-Générer des rapports simples sur : 
-Le taux de production.
-- fichier "commande.py", classe "Order", fonctions "machines_capacity" et "machine_capacity" 
--> taux de charge de toutes les machines en moyenne
--> taux de charge par machine
--> goulot d'étranglement
--> machines surchagées
--> machine la plus surchargée
-
-Les anomalies détectées. 
-- fichier "alea.py", classe "Alea", fonction "launch_random_event" 
--> écriture de l'incident dans un fichier log
--> génération d'un incident aléatoire qui se règle seul au bout d'un certain temps
-
-L'état des stocks. 
-- fichier "materiaux.py", classe "Gestion", fonction "start_production" 
--> commande automatique en lot s'il y a un manque
--> stock trop insuffisant, la production de la recette est arretée et nouvelle commande pour anticiper cette prochaine commande future
-
-Afficher un tableau de bord en terminal ou avec une bibliothèque graphique comme matplotlib pour 
-visualiser :
-L’évolution des stocks.
-- fichier "graph.py" classe "Graph"
--> génération d'un graphe en barre représentant l'état des stocks 
-
-Le fonctionnement des machines.
-- [A FAIRE]
+Visualiser et optimiser ses processus de production.
+Identifier et résoudre les goulets d’étranglement.
+Prévoir et gérer les anomalies dans le flux de production.
+Vous travaillerez en toute autonomie et devrez livrer un prototype opérationnel. Les livrables doivent être suffisamment robustes pour être présentés lors d’une réunion avec les dirigeants de ConnectProd Industries.

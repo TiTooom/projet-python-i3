@@ -4,8 +4,6 @@ from commandes import Order
 from dashboard import DashboardApp
 from alea import Alea
 
-# Choisir si on veut activer les aléas
-ALLOW_ALEA = False
 
 '''
 Fichier à executer pour lancer la simulation.
@@ -20,8 +18,6 @@ class Factory:
         self.machines = [] #liste des machines de l'usine
         self.alea = [] #liste des aléas de l'usine
 
-
-global get_usine_info
 
 if __name__ == '__main__':
 
@@ -50,7 +46,6 @@ if __name__ == '__main__':
     USINE.alea.append(alea2)
     USINE.alea.append(alea3)
 
-
     # Affichage des informations de l'usine
     print("\nNom de l'usine : ", USINE.nom)
     print("Localisation de l'usine : ", USINE.localization)
@@ -73,7 +68,6 @@ if __name__ == '__main__':
     # Lancement en prodction d'une recette
     print("\nExemple de production :")
     GESTION.start_production(recipes[0],1,"all",True, "capacity")
-
 
     # Affichag du carnet de commande de l'usine
     ORDER = Order(USINE)
